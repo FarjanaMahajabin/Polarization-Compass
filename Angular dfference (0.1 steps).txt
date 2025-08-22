@@ -2,11 +2,10 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# ----- paths -----
 p1 = r"G:\my\New Project\2024-10-08-19-31-33_angle_0.png"   # reference (target) image
 p2 = r"G:\my\New Project\2024-10-08-19-31-39_angle_31.png"  # image to be rotated/aligned
 
-# ----- load color (for display) and grayscale (for AoLP math) -----
+#load color (for display) and grayscale (for AoLP math)
 img1c = cv2.imread(p1, cv2.IMREAD_COLOR)          # load Image 1 in color (BGR) for display
 img2c = cv2.imread(p2, cv2.IMREAD_COLOR)          # load Image 2 in color (BGR) for display
 img1g = cv2.imread(p1, cv2.IMREAD_GRAYSCALE).astype(np.float32)  # same Image 1 as 1-channel float
@@ -25,7 +24,7 @@ r = min(h, w)//2 - 2                             # circle radius (slightly small
 Y, X = np.ogrid[:h, :w]                          # fast grid for distance computation
 mask = ((X - cx)**2 + (Y - cy)**2) <= (r*r)      # boolean mask: True inside the circle
 
-# --- AoLP helpers (calculation only; display uses original color) ---
+# AoLP helpers (calculation only; display uses original color)
 def to_deg(gray):                                 # map 0-255 grayscale to 0-180 degrees
     return gray * (180.0/255.0)
 
@@ -82,3 +81,4 @@ plt.show()
 
 
 print(f"The angular difference is {best_angle:.2f}")
+
