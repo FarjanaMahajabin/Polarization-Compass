@@ -1,10 +1,10 @@
 import cv2, numpy as np, matplotlib.pyplot as plt  
 
-# --- paths ---
+# paths
 p1 = r"G:\my\New Project\2024-10-08-19-31-33_angle_0.png"  
 p2 = r"G:\my\New Project\2024-10-08-19-31-39_angle_31.png" 
 
-# --- load ---
+
 img1c = cv2.imread(p1, cv2.IMREAD_COLOR)       
 img2c = cv2.imread(p2, cv2.IMREAD_COLOR)       
 img1g = cv2.imread(p1, cv2.IMREAD_GRAYSCALE).astype(np.float32)  
@@ -51,19 +51,19 @@ def to_rgba(bgr, m):            # convert image to RGBA with mask as alpha
     return np.dstack([rgb, (m*255).astype(np.uint8)])  # stack mask as alpha channel
 
 
-# --- rough (10°) search ---
+# rough (10°) search
 rough_angles = np.arange(-180.0, 180.0, 10.0)   # test angles from -180° to 180° with 10° steps
 rough_losses = [loss(a) for a in rough_angles]  # compute loss for each angle
 best_rough = float(rough_angles[int(np.argmin(rough_losses))])  # angle with lowest loss (rough estimate)
 
-# --- fine (0.01°) search in ±5° window around rough best ---
+# fine (0.01°) search in ±5° window around rough best
 fine_start, fine_end = best_rough - 5.0, best_rough + 5.0  # narrow search window
 fine_angles = np.arange(fine_start, fine_end, 0.01, dtype=np.float32)  # generate fine steps
 fine_losses = [loss(a) for a in fine_angles]  # compute loss for each fine angle
 best_fine_angle = float(fine_angles[int(np.argmin(fine_losses))])  # best fine angle
 best_fine_loss  = float(np.min(fine_losses))  # best fine loss
 
-# --- SGD (stochastic gradient descent) optimization ---
+#SGD (stochastic gradient descent) optimization
 rng = np.random.default_rng(123)   # random number generator
 ang = best_fine_angle              # start SGD from fine best angle
 lr, eps = 0.12, 0.05               # learning rate and finite difference step
@@ -84,10 +84,10 @@ for _ in range(iters):             # loop over iterations
     if L < best_sgd_loss: best_sgd_angle, best_sgd_loss = ang, L  # update best if improved
     lr *= decay                    # reduce learning rate gradually
 
-# --- choose final angle ---
+#choose final angle 
 final_angle, final_loss = (best_fine_angle, best_fine_loss) if best_fine_loss <= best_sgd_loss else (best_sgd_angle, best_sgd_loss)
 
-# --- show images ---
+
 rot2c = rotate(img2c, final_angle) # rotate image 2 by final angle
 
 plt.figure(figsize=(12,4))         # create figure
@@ -96,7 +96,7 @@ plt.subplot(1,3,2); plt.imshow(to_rgba(img2c, mask)); plt.title("Image 2"); plt.
 plt.subplot(1,3,3); plt.imshow(to_rgba(rot2c, mask)); plt.title(f"Rotated {final_angle:.4f}°"); plt.axis('off') # show rotated image
 plt.tight_layout(); plt.show()     # adjust layout and show
 
-# --- plot loss vs angle (fine search) ---
+# plot loss vs angle (fine search)
 plt.figure(figsize=(10,5))         # create figure
 #plt.plot(rough_angles, rough_losses, marker='o', linewidth=1, label="Rough 10°")  # (optional) plot rough search
 plt.plot(fine_angles, fine_losses, linewidth=1, label=f"0.01° Steps", color='red') # plot fine search curve
@@ -106,7 +106,7 @@ plt.title("Loss vs Angle")         # title
 plt.xlabel("Angle (deg)"); plt.ylabel("Mean AoLP diff (deg)") # labels
 plt.grid(False); plt.legend(); plt.show()  # show legend and plot
 
-# --- plot SGD loss vs iteration ---
+#plot SGD loss vs iteration
 plt.figure(figsize=(8,4))          # create figure
 plt.plot(sgd_loss_hist)            # plot loss history
 plt.xlim(0,120)                    # x-axis limit
@@ -118,3 +118,4 @@ plt.tight_layout(); plt.show()     # adjust layout and show
 print(f"Rough best = {best_rough:.2f}°")                   # print rough best angle
 print(f"Fine angle = {best_fine_angle:.4f}°, loss = {best_fine_loss:.6f}") # print fine search result
 print(f"SGD best angle = {best_sgd_angle:.4f}°, loss = {best_sgd_loss:.6f}") # print SGD result
+
