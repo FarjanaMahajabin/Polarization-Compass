@@ -17,7 +17,7 @@ S2 = (2 * (S2/255.0)) -1
 # Calculate DoLP and AoLP
 pre_DoLP = np.sqrt((S1**2) + (S2**2))
 DoLP = pre_DoLP/S0
-# DoLP = np.clip(DoLP, 0, 1) 
+ 
 
 AoLP = 0.5 * np.arctan2(S2, S1)
 AoLP_deg = np.degrees(AoLP)
@@ -36,3 +36,4 @@ plt.title('Angle of Linear Polarization')
 
 plt.tight_layout()
 plt.show()
+
