@@ -114,8 +114,9 @@ plt.title("SGD Loss (mini-batches)") # title
 plt.xlabel("Iteration"); plt.ylabel("Loss"); plt.grid(False) # labels
 plt.tight_layout(); plt.show()     # adjust layout and show
 
-# --- print results ---
+
 print(f"Rough best = {best_rough:.2f}°")                   # print rough best angle
 print(f"Fine angle = {best_fine_angle:.4f}°, loss = {best_fine_loss:.6f}") # print fine search result
 print(f"SGD best angle = {best_sgd_angle:.4f}°, loss = {best_sgd_loss:.6f}") # print SGD result
+
 
